@@ -1,0 +1,19 @@
+.chart-wrapper {
+  padding: 2%;
+  width: 96%;
+  display: inline-block;
+}
+
+.main.chart-wrapper {
+  height: 400px;
+}
+
+.sub.chart-wrapper {
+  height: 300px;
+}
+
+@media (min-width: 700px) {
+  .sub.chart-wrapper {
+    width: 29%;
+  }
+}
