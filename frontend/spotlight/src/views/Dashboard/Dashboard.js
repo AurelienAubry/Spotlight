@@ -10,9 +10,15 @@ export default class Dashboard extends Component {
 		return (
 			<div className={classes.container_custom}>
 		        <NavBar/>
-		        <div className="main chart-wrapper">
-		        	<LineChartContainer/>
-	      		</div>
+				<div className="container-fluid">
+          			<div className="row">
+            			<div className="col-md-12">
+							<div className="main chart-wrapper">
+								<LineChartContainer title="Annual listening" label="minutes"/>
+							</div>
+						</div>
+					</div>
+				</div>
 	      	</div>
 		);
 	}

@@ -1,5 +1,6 @@
 import React, {Component, createRef} from 'react';
 import Chart from "chart.js";
+import 'chartjs-plugin-zoom'
 
 //import classes from "./LineChartComponent.module.css";
 
@@ -21,15 +22,8 @@ export default class LineChartComponent extends Component {
 
 	componentDidMount() {
 
+		const {labels, data, label} = this.props;
 		const myChartRef = this.chartRef.current.getContext("2d");
-		const {labels, data} = this.props;
-
-	    const {height: graphHeight} = myChartRef.canvas;
-
-	    let gradientLine = myChartRef.createLinearGradient(0, 0, 0, graphHeight);
-		gradientLine.addColorStop(0, 'rgba(40,175,250,.25)');
-		gradientLine.addColorStop(1, 'rgba(40,175,250,0)');
-
 		this.myChart = new Chart(myChartRef,
 		{
 			type: "line",
@@ -37,27 +31,60 @@ export default class LineChartComponent extends Component {
 				labels: labels,
 				datasets: [
 					{
-						label: "Sales",
+						label: label,
 						data: data,
-						backgroundColor: gradientLine,
+						pointHoverBorderWidth: 2,
+      					pointRadius: 1.5,
+						pointBorderWidth: 1,
 						borderColor: "#28AFFA",
-		                pointBackgroundColor: "#19283F",
+		                pointBackgroundColor: "#28AFFA",
 		                pointBorderColor: "#28AFFA",
-		                pointHoverBackgroundColor: "#19283F",
+		                pointHoverBackgroundColor: "#28AFFA",
 		                pointHoverBorderColor: "#28AFFA",
 					}
 				],
 			},
+			
 			options: {
 				responsive: true,
-  				maintainAspectRatio: false,
+				maintainAspectRatio: false,
+				aspectRatio: 1,
+				legend: {
+					display: false
+				},
+				scales: {
+					xAxes: [{
+					  type: 'time'
+					}]
+				},
+				pan: {
+					enabled: true,
+					mode: 'x'
+				},
+				zoom: {
+					enabled: true,
+					mode: 'x'
+				}
+				
 			}
 		});
 	}
 
 	componentDidUpdate() {
-	  this.myChart.data.labels = this.props.labels;
-	  this.myChart.data.datasets[0].data = this.props.data;
-	  this.myChart.update();
+		const {labels, data, label} = this.props;
+		
+		const myChartRef = this.chartRef.current.getContext("2d");
+		const {height: graphHeight} = myChartRef.canvas;
+
+	    let gradientLine = myChartRef.createLinearGradient(0, 0, 0, graphHeight);
+		gradientLine.addColorStop(0, 'rgba(40,175,250,.75)');
+		gradientLine.addColorStop(1, 'rgba(40,175,250,0)');
+		
+		this.myChart.data.datasets[0].backgroundColor = gradientLine;
+		this.myChart.data.labels = labels;
+		this.myChart.data.datasets[0].data = data;
+		this.myChart.data.datasets[0].label = label;
+		
+		this.myChart.update();
 	}
 }
