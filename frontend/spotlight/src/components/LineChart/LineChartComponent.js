@@ -22,7 +22,7 @@ export default class LineChartComponent extends Component {
 
 	componentDidMount() {
 
-		const {labels, data, label} = this.props;
+		const {labels, data, label, color} = this.props;
 		const myChartRef = this.chartRef.current.getContext("2d");
 		this.myChart = new Chart(myChartRef,
 		{
@@ -36,11 +36,11 @@ export default class LineChartComponent extends Component {
 						pointHoverBorderWidth: 2,
       					pointRadius: 1.5,
 						pointBorderWidth: 1,
-						borderColor: "#28AFFA",
-		                pointBackgroundColor: "#28AFFA",
-		                pointBorderColor: "#28AFFA",
-		                pointHoverBackgroundColor: "#28AFFA",
-		                pointHoverBorderColor: "#28AFFA",
+						borderColor: color,
+		                pointBackgroundColor: color,
+		                pointBorderColor: color,
+		                pointHoverBackgroundColor: color,
+		                pointHoverBorderColor: color,
 					}
 				],
 			},
@@ -71,14 +71,19 @@ export default class LineChartComponent extends Component {
 	}
 
 	componentDidUpdate() {
-		const {labels, data, label} = this.props;
+		const {labels, data, label, color} = this.props;
 		
 		const myChartRef = this.chartRef.current.getContext("2d");
 		const {height: graphHeight} = myChartRef.canvas;
 
-	    let gradientLine = myChartRef.createLinearGradient(0, 0, 0, graphHeight);
-		gradientLine.addColorStop(0, 'rgba(40,175,250,.75)');
-		gradientLine.addColorStop(1, 'rgba(40,175,250,0)');
+		let gradientLine = myChartRef.createLinearGradient(0, 0, 0, graphHeight);
+		
+		const rgb = [color.substring(1,3), color.substring(3,5), color.substring(5,7)];
+		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.75)`;
+		const color2 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.0)`;
+
+		gradientLine.addColorStop(0, color1);
+		gradientLine.addColorStop(1, color2);
 		
 		this.myChart.data.datasets[0].backgroundColor = gradientLine;
 		this.myChart.data.labels = labels;

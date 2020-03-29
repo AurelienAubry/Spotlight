@@ -37,7 +37,7 @@ export default class LineChartContainer extends Component {
             <h4 className="card-title">{title}</h4>
           </div>
           <div className="card-body">
-            <LineChartComponent data={chartData} labels={chartLabels} label={label}/ >
+            <LineChartComponent data={chartData} labels={chartLabels} label={label} color="#28AFFA"/ >
           </div>
         </div>
     );
