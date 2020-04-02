@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import LineChartComponent from '../../components/LineChart/LineChartComponent'
+import BarChartComponent from '../../components/BarChart/BarChartComponent'
 import { blue2, yellow2, red2 } from "../../colors";
 import { Card } from 'react-bootstrap';
 
-export default class LineChartContainer extends Component {
+export default class BarChartContainer extends Component {
 
   constructor(props) {
     super(props);
@@ -34,7 +34,7 @@ export default class LineChartContainer extends Component {
     const { title, chartData, chartLabels, label } = this.state;
     return (
 
-      <LineChartComponent data={chartData} labels={chartLabels} label={label} color={blue2} />
+      <BarChartComponent data={chartData} labels={chartLabels} label={label} color={blue2} />
 
     );
   }

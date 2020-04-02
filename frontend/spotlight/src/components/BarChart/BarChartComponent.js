@@ -2,9 +2,7 @@ import React, { Component, createRef } from 'react';
 import Chart from "chart.js";
 import 'chartjs-plugin-zoom'
 
-//import classes from "./LineChartComponent.module.css";
-
-export default class LineChartComponent extends Component {
+export default class BarChartComponent extends Component {
 
 	constructor(props) {
 		super(props);
@@ -26,21 +24,17 @@ export default class LineChartComponent extends Component {
 		const myChartRef = this.chartRef.current.getContext("2d");
 		this.myChart = new Chart(myChartRef,
 			{
-				type: "line",
+				type: "bar",
 				data: {
 					labels: labels,
 					datasets: [
 						{
 							label: label,
 							data: data,
-							pointHoverBorderWidth: 2,
-							pointRadius: 1.5,
-							pointBorderWidth: 1,
+							borderWidth: 1.5,
+							hoverBorderWidth: 2.75,
 							borderColor: color,
-							pointBackgroundColor: color,
-							pointBorderColor: color,
-							pointHoverBackgroundColor: color,
-							pointHoverBorderColor: color,
+							hoverBorderColor: color,
 						}
 					],
 				},

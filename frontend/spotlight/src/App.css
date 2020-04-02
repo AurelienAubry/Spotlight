@@ -3,3 +3,11 @@ body {
     background: whitesmoke;
     margin-top: 25px;
 }
+
+.dropdown {
+    background-color: white;
+  }
+
+.custom-btn {
+    background-color: #28AFFA;
+}
