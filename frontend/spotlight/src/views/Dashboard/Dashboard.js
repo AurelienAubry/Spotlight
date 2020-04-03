@@ -14,17 +14,17 @@ export default class Dashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			menuTitle: "Last 30 days",
-			value: 1
+			period: "Last 30 days",
+			unit: "minutes"
 		}
 	}
 
 	changeValue(e) {
-		this.setState({ menuTitle: e.currentTarget.textContent });
+		this.setState({ period: e.currentTarget.textContent });
 	}
 
 	handleChange(val) {
-		this.setState({ value: val });
+		this.setState({ unit: val });
 	}
 
 	render() {
@@ -35,10 +35,10 @@ export default class Dashboard extends Component {
 						<Col><h4>Global Statistics</h4></Col>
 						<Col xs={4}></Col>
 						<Col>
-							<DropdownButton variant="custom-btn" className="mb-3 float-right shadow rounded" title={this.state.menuTitle}>
+							<DropdownButton variant="custom-btn" className="mb-3 float-right shadow rounded" title={this.state.period}>
 								<DropdownItem><div onClick={this.changeValue.bind(this)}>Last 30 days</div></DropdownItem>
 								<DropdownItem><div onClick={this.changeValue.bind(this)}>Last 6 months</div></DropdownItem>
-								<DropdownItem><div onClick={this.changeValue.bind(this)}>All time</div></DropdownItem>
+								<DropdownItem><div onClick={this.changeValue.bind(this)}>Last 12 months</div></DropdownItem>
 							</DropdownButton>
 						</Col>
 					</Row>
@@ -60,18 +60,22 @@ export default class Dashboard extends Component {
 						<Col>
 							<Card className="shadow rounded">
 								<Card.Body>
-									<Container fluid>
-										<Row>
+									<Container fluid className="mb-2">
+									<Row className="mb-2">
 											<Col>
-												<h4>title</h4>
+												<b>How much {this.state.unit} did you listen in the last {this.state.period.toLowerCase()}?</b>
 											</Col>
 											<Col>
-												<ToggleButtonGroup type="radio" name="options" defaultValue={1} className="mb-3 float-right shadow rounded">
-													<ToggleButton value={1} className="custom-btn">Option 1</ToggleButton>
-													<ToggleButton value={2} className="custom-btn">Option 2</ToggleButton>
-												</ToggleButtonGroup>
+												<div className="float-right ">
+													Statistics based on: &nbsp;
+													<ToggleButtonGroup type="radio" name="options" defaultValue="minutes" className="shadow rounded" onChange={this.handleChange.bind(this)}>
+														<ToggleButton value="tracks" className="custom-btn">Tracks</ToggleButton>
+														<ToggleButton value="minutes" className="custom-btn">Minutes</ToggleButton>
+													</ToggleButtonGroup>
+												</div>
 											</Col>
 										</Row>
+										
 									</Container>
 									<BarChartContainer label="minutes" />
 								</Card.Body>
