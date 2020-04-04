@@ -15,39 +15,59 @@ class Logic:
             with open(stream_hist_file, 'r', encoding='UTF-8') as f:
                 new_streamings = ast.literal_eval(f.read())
                 streamings.extend([streaming for streaming in new_streamings])
-        
-        streamings_df = pd.DataFrame(streamings)
-        streamings_df['minPlayed'] = streamings_df['msPlayed'] / 60000
-        streamings_df['endTime'] = pd.to_datetime(streamings_df['endTime'])
 
+        streamings_df = pd.DataFrame(streamings)
+        streamings_df.rename(columns = {'artistName':'artist', 'trackName':'track'}, inplace = True)
+        streamings_df['minPlayed'] = streamings_df['msPlayed'] / 60000
+        streamings_df.drop('msPlayed', axis=1, inplace=True)
+
+        streamings_df['endTime'] = pd.to_datetime(streamings_df['endTime'])
         streamings_df.set_index('endTime',inplace=True)
-        streamings_df.index = pd.DatetimeIndex(streamings_df.index)
-        streamings_df = streamings_df.sort_index(ascending=True)
+
+        streamings_df = streamings_df.sort_index(ascending=False)
+
         self.streamings_df = streamings_df
 
+    def create_daily_streaming_df(self):
+        daily_streamings_df = self.streamings_df.resample('D').agg({'track': 'describe', 'artist': 'describe', 'minPlayed': 'sum'})
+        daily_streamings_df.columns = ["_".join(col_name).rstrip('_') for col_name in daily_streamings_df.columns.to_flat_index()]
+        daily_streamings_df.drop('artist_count', axis=1, inplace=True)
+        daily_streamings_df = daily_streamings_df.sort_index(ascending=False)
+        daily_streamings_df.rename(columns = {'minPlayed_minPlayed':'minPlayed'}, inplace = True)
+        daily_streamings_df['cumMinPlayed'] = daily_streamings_df['minPlayed'].cumsum()
+        daily_streamings_df['cumTrack_count'] = daily_streamings_df['track_count'].cumsum()
 
-    def get_total_daily_listening_data(self):
-        daily_streamings_df = self.streamings_df['minPlayed'].copy()
+        self.daily_streamings_df = daily_streamings_df
 
-        daily_streamings_df = daily_streamings_df.resample('D').agg(['sum'])
-        idx = pd.date_range(daily_streamings_df.index.min(), daily_streamings_df.index.max(), freq='D')
-        daily_streamings_df = daily_streamings_df.reindex(idx, fill_value=0)
-    
-        return daily_streamings_df.index.astype(str).tolist(), daily_streamings_df['sum'].tolist()
+    def create_artist_songs_df(self):
+        artist_songs_df = self.streamings_df.reset_index()[['artist', 'track']].copy()
+        artist_songs_df.drop_duplicates(subset =['track', 'artist'],keep = False, inplace = True)
+        artist_songs_df = artist_songs_df.sort_values(by='artist', ascending=False)
+        artist_songs_df = artist_songs_df.reset_index(drop=True)
 
-    def get_total_min_listened(self):
-        return self.streamings_df['minPlayed'].sum()
+        self.artist_songs_df = artist_songs_df
 
-    def get_unique_songs(self):
-        unique_songs = self.streamings_df.drop_duplicates(subset=['artistName', 'trackName']).shape[0]
-        return unique_songs
+    def get_top_artist_df(self, start_date, count):
+        top_artist_df = self.streamings_df[self.streamings_df.index > start_date].groupby(by=['artist']).agg({'minPlayed': 'sum', 'track': 'count'}).sort_values(by='minPlayed',ascending=False).head(count)
+        return top_artist_df
 
-    def get_most_listened_artist(self):
-        
-        most_listened = self.streamings_df.groupby(by=['artistName']).sum()
-        most_listened = most_listened.sort_values(by=['minPlayed'],ascending=False)[:1]
-        return most_listened
-        
+    def get_top_song_df(self, start_date, count):
+        top_songs_df = self.streamings_df[self.streamings_df.index > start_date].groupby(by=['track']).agg({'minPlayed': 'sum', 'track': 'count'}).sort_values(by='minPlayed', ascending=False).head(count)
+        return top_songs_df
+
+    def get_hours_day_listen(self, start_date):
+        hours_streamings_df = self.streamings_df[self.streamings_df.index < start_date].resample('1H').sum()
+        hours_streamings_df = hours_streamings_df.groupby(hours_streamings_df.index.hour).agg(lambda x: x.mean(skipna=False))
+        return hours_streamings_df
+
+    def get_min_listened(self, start_date):
+        return self.daily_streamings_df.at[start_date, 'cumMinPlayed'][0]
+
+    def get_tracks_listened(self, start_date):
+        return self.daily_streamings_df.at[start_date, 'cumTrack_count'][0]
+
 
     def __init__(self):
         self.create_streaming_df()
+        self.create_daily_streaming_df()
+        self.create_artist_songs_df()
