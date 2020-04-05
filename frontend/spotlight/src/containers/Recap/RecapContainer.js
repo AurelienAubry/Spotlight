@@ -7,27 +7,34 @@ export default class RecapContainer extends Component {
     super(props);
     this.state = {
       nbSongs: 0,
-      listenedMin: 0,
-      mostListenedName: "",
-      mostListenedMin: 0
+      nbMinutes: 0,
+      avgMinutes: 0
     }
   }
 
-  getData() {
-    fetch('/recap').then(res => res.json()).then(data => {
-      this.setState({ nbSongs: data.unique_song, listenedMin: data.listened_min, mostListenedName: data.most_listened_name, mostListenedMin: data.most_listened_min })
-    }).catch(console.log);
+  fetchData(period) {
+    fetch(`/get/tracks-listened?dayOffset=${period}`).then(res => res.json()).then(data => {
+      this.setState({ nbSongs: data.tracks_listened})
+    });
+
+    fetch(`/get/min-listened?dayOffset=${period}`).then(res => res.json()).then(data => {
+      this.setState({ nbMinutes: data.min_listened})
+    });
+
+    fetch(`/get/avg-min-listened?dayOffset=${period}`).then(res => res.json()).then(data => {
+      this.setState({ avgMinutes: data.avg_min_listened})
+    });
   }
 
   componentDidMount() {
-    this.getData();
+    const {period} = this.props;
+    this.fetchData(period);
   }
 
   render() {
-    const { nbSongs, listenedMin, mostListenedName, mostListenedMin } = this.state;
-    console.log(nbSongs)
+    const { nbSongs, nbMinutes, avgMinutes} = this.state;
     return (
-      <RecapComponent nbSongs={nbSongs} listenedMin={listenedMin} mostListenedName={mostListenedName} mostListenedMin={mostListenedMin} />
+      <RecapComponent nbSongs={nbSongs} nbMinutes={nbMinutes} avgMinutes={avgMinutes}/>
 
     );
   }

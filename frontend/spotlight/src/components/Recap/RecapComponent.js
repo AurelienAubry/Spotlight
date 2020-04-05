@@ -12,7 +12,7 @@ export default class RecapComponent extends Component {
     }
 
     render() {
-        const { nbSongs, listenedMin, mostListenedName, mostListenedMin } = this.props;
+        const { nbSongs, nbMinutes, avgMinutes } = this.props;
         return (
             <Row mb={4}>
                 <Col>
@@ -20,7 +20,7 @@ export default class RecapComponent extends Component {
                         <Card.Body>
                             <center>
                                 <MusicNoteList className="mb-4" size={30} color={blue2} />
-                                <h4 className="font-weight-bold"> 417 </h4>
+                                <h4 className="font-weight-bold"> {nbSongs} </h4>
                                 <p> Total Tracks </p>
                             </center>
                         </Card.Body>
@@ -32,7 +32,7 @@ export default class RecapComponent extends Component {
                         <Card.Body>
                             <center>
                                 <Clock className="mb-4" size={30} color={yellow2} />
-                                <h4 className="font-weight-bold"> 1632 </h4>
+                                <h4 className="font-weight-bold"> {nbMinutes} </h4>
                                 <p> Total Minutes </p>
                             </center>
                         </Card.Body>
@@ -44,7 +44,7 @@ export default class RecapComponent extends Component {
                         <Card.Body>
                             <center>
                                 <ClockHistory className="mb-4" size={30} color={red2} />
-                                <h4 className="font-weight-bold"> 150 </h4>
+                                <h4 className="font-weight-bold"> {avgMinutes} </h4>
                                 <p> Minutes Average </p>
                             </center>
                         </Card.Body>

@@ -15,15 +15,18 @@ export default class BarChartContainer extends Component {
     }
   }
 
-  getData() {
-    fetch('/data').then(res => res.json()).then(data => {
-      this.setState({ chartData: data.data, chartLabels: data.labels })
-    }).catch(console.log);
+  fetchData(url, chartLabelsName, chartDataName) {
+    fetch(url).then(res => res.json()).then(data => {
+      const parsedData = JSON.parse(data);
+      const chartLabels = parsedData[chartLabelsName]
+      const chartData = parsedData[chartDataName]
+      this.setState({ chartLabels: chartLabels, chartData: chartData});
+    });
   }
 
   componentDidMount() {
     const { title, label } = this.props;
-    this.setState({ title: title, label: label })
+    this.setState({ title: title, label: label });
     /*this.getData()
   	window.setInterval(() => {
 	    this.getData()
@@ -32,6 +35,7 @@ export default class BarChartContainer extends Component {
 
   render() {
     const { title, chartData, chartLabels, label } = this.state;
+    console.log(chartData)
     return (
 
       <BarChartComponent data={chartData} labels={chartLabels} label={label} color={blue2} />

@@ -10,7 +10,6 @@ export default class BarChartComponent extends Component {
 	}
 
 	render() {
-
 		return (
 			<div>
 				<canvas id="myChart" ref={this.chartRef} />
@@ -65,7 +64,7 @@ export default class BarChartComponent extends Component {
 	}
 
 	componentDidUpdate() {
-		const { labels, data, label, color } = this.props;
+		const { data, labels, label, color } = this.props;
 
 		const myChartRef = this.chartRef.current.getContext("2d");
 		const { height: graphHeight } = myChartRef.canvas;
@@ -83,7 +82,7 @@ export default class BarChartComponent extends Component {
 		this.myChart.data.labels = labels;
 		this.myChart.data.datasets[0].data = data;
 		this.myChart.data.datasets[0].label = label;
-
+		this.myChart.resetZoom()
 		this.myChart.update();
 	}
 }

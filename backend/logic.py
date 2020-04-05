@@ -84,6 +84,15 @@ class Logic:
         date = start_date - pd.DateOffset(days=day_offset)
         return date.strftime('%Y-%m-%d')
 
+    def get_daily_listened_min_df(self, day_offset):
+        date = self.get_date_offset(self.end_date, day_offset)
+        return self.daily_streamings_df[self.daily_streamings_df.index > date]["minPlayed"]
+    
+    def get_daily_listened_tracks_df(self, day_offset):
+        date = self.get_date_offset(self.end_date, day_offset)
+        return self.daily_streamings_df[self.daily_streamings_df.index > date]["track_count"]
+
+
     def get_top_artists_df(self, day_offset, count):
         """
         Get the dataframe of the [count] top artists over the last [day_offset] days
@@ -99,7 +108,7 @@ class Logic:
         date = self.get_date_offset(self.end_date, day_offset)
         top_artists_df = self.streamings_df[self.streamings_df.index > date].groupby(by=['artist']).agg(
             {'minPlayed': 'sum', 'track': 'count'}).sort_values(by='minPlayed', ascending=False).head(count)
-        return top_artists_df
+        return top_artists_df['minPlayed']
 
     def get_top_songs_df(self, day_offset, count):
         """
@@ -148,7 +157,22 @@ class Logic:
         """
 
         date = self.get_date_offset(self.end_date, day_offset)
-        return self.daily_streamings_df.at[date, 'cumMinPlayed'][0]
+        return int(self.daily_streamings_df.at[date, 'cumMinPlayed'][0])
+
+    def get_avg_min_listened(self, day_offset):
+        """
+        Get the average number of minutes listened over the last [day_offset] days
+        
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+        
+        Returns:
+            int -- the average number of minutes listened over the last [day_offset] days
+        """
+
+        date = self.get_date_offset(self.end_date, day_offset)
+        avg_min_listened = self.daily_streamings_df[self.daily_streamings_df.index > date]['minPlayed'].mean()
+        return int(avg_min_listened)
 
     def get_tracks_listened(self, day_offset):
         """
@@ -162,7 +186,7 @@ class Logic:
         """
 
         date = self.get_date_offset(self.end_date, day_offset)
-        return self.daily_streamings_df.at[date, 'cumTrack_count'][0]
+        return int(self.daily_streamings_df.at[date, 'cumTrack_count'][0])
 
     def __init__(self):
         self.create_streaming_df()
