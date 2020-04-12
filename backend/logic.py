@@ -1,6 +1,7 @@
 import os
 import ast
 import pandas as pd
+import numpy as np
 from sklearn import preprocessing
 
 
@@ -115,7 +116,7 @@ class Logic:
         date = self.get_date_offset(self.end_date, day_offset)
         top_artists_df = self.streamings_df[self.streamings_df.index > date].groupby(by=['artist']).agg(
             {'minPlayed': 'sum', 'track': 'count'}).sort_values(by='minPlayed', ascending=False).head(count)
-        return top_artists_df['minPlayed']
+        return top_artists_df['minPlayed'].apply(np.ceil)
 
     def get_top_songs_df(self, day_offset, count):
         """

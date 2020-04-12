@@ -31,9 +31,9 @@ export default class BarChartComponent extends Component {
 							label: label,
 							data: data,
 							borderWidth: 1.5,
-							hoverBorderWidth: 2.75,
 							borderColor: color,
 							hoverBorderColor: color,
+							hoverBorderWidth: 2.75
 						}
 					],
 				},
@@ -46,9 +46,29 @@ export default class BarChartComponent extends Component {
 						display: false
 					},
 					scales: {
+						
 						xAxes: [{
-							type: 'time'
+							type: 'time',
+							ticks: {
+								fontColor: "#ffffff"
+							},
+							gridLines: {
+								color: 'rgba(200, 200, 200, 0.05)'
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								fontColor: "#ffffff"
+							},
+							gridLines: {
+								color: 'rgba(200, 200, 200, 0.05)'
+							}
 						}]
+						
+					},
+					ticks: {
+						display: false,
+						fontColor: "#ffffff"
 					},
 					pan: {
 						enabled: true,
@@ -72,8 +92,8 @@ export default class BarChartComponent extends Component {
 		let gradientLine = myChartRef.createLinearGradient(0, 0, 0, graphHeight);
 
 		const rgb = [color.substring(1, 3), color.substring(3, 5), color.substring(5, 7)];
-		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.75)`;
-		const color2 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.0)`;
+		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.5)`;
+		const color2 = `rgba(${rgb.map(c => (parseInt(c, 16))-50).join()}, 0)`;
 
 		gradientLine.addColorStop(0, color1);
 		gradientLine.addColorStop(1, color2);

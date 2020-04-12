@@ -16,36 +16,34 @@ export default class RecapComponent extends Component {
         return (
             <Row mb={4}>
                 <Col>
-                    <Card className="shadow-sm rounded-lg">
+                    <Card className="gradient-1 shadow-sm rounded-lg">
                         <Card.Body>
                             <center>
-                                <MusicNoteList className="mb-4" size={30} color={blue2} />
+                                <b> Total Tracks </b>
                                 <h4 className="font-weight-bold"> {nbSongs} </h4>
-                                <p> Total Tracks </p>
                             </center>
                         </Card.Body>
 
                     </Card>
                 </Col>
                 <Col>
-                    <Card className="shadow-sm rounded-lg">
+                    <Card className="gradient-2 shadow-sm rounded-lg">
                         <Card.Body>
                             <center>
-                                <Clock className="mb-4" size={30} color={yellow2} />
+                                <b> Total Minutes </b>
                                 <h4 className="font-weight-bold"> {nbMinutes} </h4>
-                                <p> Total Minutes </p>
                             </center>
                         </Card.Body>
 
                     </Card>
                 </Col>
                 <Col>
-                    <Card className="shadow-sm rounded-lg">
+                    <Card className="gradient-3 shadow-sm rounded-lg">
                         <Card.Body>
                             <center>
-                                <ClockHistory className="mb-4" size={30} color={red2} />
+                                <b> Minutes Average </b>
                                 <h4 className="font-weight-bold"> {avgMinutes} </h4>
-                                <p> Minutes Average </p>
+
                             </center>
                         </Card.Body>
 

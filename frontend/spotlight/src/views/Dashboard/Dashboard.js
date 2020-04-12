@@ -11,6 +11,8 @@ import {Typeahead} from 'react-bootstrap-typeahead';
 import LineChartComponent from '../../components/Charts/LineChartComponent';
 import HorizontalBarChartComponent from '../../components/Charts/HorizontalBarChartComponent';
 import PolarAreaChartComponent from '../../components/Charts/PolarAreaChartComponent';
+import ListContainer from '../../containers/ListContainer';
+import BarChartComponent from '../../components/Charts/BarChartComponent';
 
 export default class Dashboard extends Component {
 
@@ -25,7 +27,7 @@ export default class Dashboard extends Component {
 		};
 		this.recapContainerElement = React.createRef();
 		this.dailyListeningGraph = React.createRef();
-		this.topArtistGraph = React.createRef();
+		this.topArtistList = React.createRef();
 		this.artistListeningGraph = React.createRef();
 		this.hoursGraph = React.createRef();
 	}
@@ -38,7 +40,7 @@ export default class Dashboard extends Component {
 
 		this.recapContainerElement.current.fetchData(period);
 		this.dailyListeningGraph.current.fetchData(`/get/daily-listened-${unit}?dayOffset=${period}`, "index", "data");
-		this.topArtistGraph.current.fetchData(`/get/top-artists?dayOffset=${period}&count=10`, "index", "data");
+		this.topArtistList.current.fetchData(`/get/top-artists?dayOffset=${period}&count=10`, "index", "data");
 		this.hoursGraph.current.fetchData(`/get/day-hours?dayOffset=${period}`, "index", "data");
 		//this.artistListeningGraph.current.fetchData(`/get/artist-${unit}-listened?dayOffset=${period}&artist=${selectedArtist}`, "index", "data");
 	}
@@ -80,7 +82,7 @@ export default class Dashboard extends Component {
 		this.getArtistsList()
 		this.recapContainerElement.current.fetchData(period);
 		this.dailyListeningGraph.current.fetchData(`/get/daily-listened-min?dayOffset=${period}`, "index", "data");
-		this.topArtistGraph.current.fetchData(`/get/top-artists?dayOffset=${period}&count=10`, "index", "data");
+		this.topArtistList.current.fetchData(`/get/top-artists?dayOffset=${period}&count=10`, "index", "data");
 		this.hoursGraph.current.fetchData(`/get/day-hours?dayOffset=${period}`, "index", "data");
 		//this.artistListeningGraph.current.fetchData(`/get/artist-${unit}-listened?dayOffset=${period}&artist=${selectedArtist}`, "index", "data");
 	}
@@ -90,13 +92,13 @@ export default class Dashboard extends Component {
 			<div>
 				<Container>
 					<Row mb={4}>
-						<Col><h4>Global Statistics</h4></Col>
+						<Col><h4 className="white-title">Spotify Statistics</h4></Col>
 						<Col xs={4}></Col>
 						<Col>
-							<DropdownButton variant="custom-btn" className="border mb-3 float-right shadow-sm rounded-lg" title={this.state.periodText}>
-								<DropdownItem><div onClick={this.updatePeriod.bind(this)}>Last 30 days</div></DropdownItem>
-								<DropdownItem><div onClick={this.updatePeriod.bind(this)}>Last 6 months</div></DropdownItem>
-								<DropdownItem><div onClick={this.updatePeriod.bind(this)}>Last 12 months</div></DropdownItem>
+							<DropdownButton variant="btn btn-custom" className="btn-custom mb-3 float-right  shadow-sm" title={this.state.periodText}>
+								<DropdownItem className="btn btn-custom"><div onClick={this.updatePeriod.bind(this)}>Last 30 days</div></DropdownItem>
+								<DropdownItem className="btn btn-custom"><div onClick={this.updatePeriod.bind(this)}>Last 6 months</div></DropdownItem>
+								<DropdownItem className="btn btn-custom"><div onClick={this.updatePeriod.bind(this)}>Last 12 months</div></DropdownItem>
 							</DropdownButton>
 						</Col>
 					</Row>
@@ -109,48 +111,51 @@ export default class Dashboard extends Component {
 									<Container fluid className="mb-2">
 									<Row className="mb-2">
 											<Col>
-												<b>How much {this.state.unit} did you listen in the {this.state.periodText.toLowerCase()}?</b>
+												<b>How many {this.state.unit} did you listen in the {this.state.periodText.toLowerCase()}?</b>
+												<hr/>
 											</Col>
 											<Col>
 												<div className="float-right ">
 													Statistics based on: &nbsp;
-													<ToggleButtonGroup type="radio" name="options" defaultValue="min" className="shadow-sm rounded" onChange={this.updateUnit.bind(this)}>
-														<ToggleButton value="tracks" className="custom-btn">Tracks</ToggleButton>
-														<ToggleButton value="min" className="custom-btn">Minutes</ToggleButton>
+													<ToggleButtonGroup type="radio" name="options" defaultValue="min" onChange={this.updateUnit.bind(this)}>
+														<ToggleButton value="tracks" className="btn-custom border">Tracks</ToggleButton>
+														<ToggleButton value="min" className="btn-custom border">Minutes</ToggleButton>
 													</ToggleButtonGroup>
 												</div>
 											</Col>
 										</Row>
 										
 									</Container>
-									<ChartContainer component={LineChartComponent} ref={this.dailyListeningGraph} label={this.state.unit} />
+									<ChartContainer component={BarChartComponent} ref={this.dailyListeningGraph} label={this.state.unit} />
 								</Card.Body>
 							</Card>
 						</Col>
 					</Row>
 					<div class="mt-4" />
-					<Row>
-						<Col xs={6}>
-							<Card className="shadow-sm rounded-lg">
+					<Row >
+						<Col>
+							<Card className="shadow-sm h-100 rounded-lg">
 								<Card.Body>
 									<Container fluid className="mb-2">
 										<Row>
 											<Col>
 												<b>Top Artists over the {this.state.periodText.toLowerCase()}</b>
+												<hr/>
 											</Col>
 										</Row>
 									</Container>
-									<ChartContainer component={HorizontalBarChartComponent} ref={this.topArtistGraph} label={this.state.unit} />
+									<ListContainer ref={this.topArtistList} col1Label="Artist" col2Label="min. played"/>
 								</Card.Body>
 							</Card>
 						</Col>
-						<Col xs={6}>
-							<Card className="shadow-sm rounded-lg">
+						<Col>
+							<Card className="shadow-sm h-100 rounded-lg">
 								<Card.Body>
 									<Container fluid className="mb-2">
 										<Row>
 											<Col>
-												<b>Top Artists over the {this.state.periodText.toLowerCase()}</b>
+												<b>Listening Hours</b>
+												<hr/>
 											</Col>
 										</Row>
 									</Container>

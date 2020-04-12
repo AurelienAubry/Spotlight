@@ -1,13 +1,87 @@
 body {
     --theme-primary: #28AFFA;
-    background: white;
+    background: linear-gradient(#292424 0.1%, #191414 99.9%);
     margin-top: 25px;
 }
 
+hr {
+    background-color: #e9e9e9;
+    height: 1px;
+}
+
 .dropdown {
-    background-color: white;
+    background-color: #e9e9e9;
   }
 
 .custom-btn {
-    background-color: #28AFFA;
+    background-color: #e9e9e9;
 }
+
+.btn-light {
+    background-color: #e9e9e9;
+}
+
+.white-title{
+    font-weight: bold;
+    color: #e9e9e9;
+}
+
+.card {
+    
+    color: #e9e9e9;
+    background: #2c2c32;
+    border: none;
+}
+
+.gradient-1{
+    color: #e9e9e9;
+    background: linear-gradient(#4286f4, #373B44);
+    border: none;
+}
+
+.gradient-2{
+    color: #e9e9e9;
+    background: linear-gradient(#c94b4b,#4b134f);
+    border: none;
+}
+
+.gradient-3{
+    color: #e9e9e9;
+    background: linear-gradient(#ad5389, #3c1053);
+    border: none;
+}
+
+.custom-dropdown {
+    
+    border-color: #e9e9e9;
+    border-width: 1px;
+    background-color: transparent;
+    color: #292424!important;
+}
+
+
+.dropdown-menu { 
+    border-width: 0.5px;
+    border-color: #e9e9e9;
+    counter-reset: #e9e9e9;
+    background-color: #292424; 
+}
+
+.btn-custom {
+    border-color: #e9e9e9;
+    border-width: 1px;
+    background-color: transparent!important;
+    color: #e9e9e9;
+}
+
+
+.btn-custom:active,
+.btn-custom:focus,
+.btn-custom:hover,
+.btn-custom.active {
+    border-width: 1px;
+    background-color: rgba(40, 176, 250, 0.75)!important;
+}
+
+
+
