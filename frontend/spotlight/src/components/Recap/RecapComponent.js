@@ -16,7 +16,7 @@ export default class RecapComponent extends Component {
         return (
             <Row mb={4}>
                 <Col>
-                    <Card className="shadow rounded">
+                    <Card className="shadow-sm rounded-lg">
                         <Card.Body>
                             <center>
                                 <MusicNoteList className="mb-4" size={30} color={blue2} />
@@ -28,7 +28,7 @@ export default class RecapComponent extends Component {
                     </Card>
                 </Col>
                 <Col>
-                    <Card className="shadow rounded">
+                    <Card className="shadow-sm rounded-lg">
                         <Card.Body>
                             <center>
                                 <Clock className="mb-4" size={30} color={yellow2} />
@@ -40,7 +40,7 @@ export default class RecapComponent extends Component {
                     </Card>
                 </Col>
                 <Col>
-                    <Card className="shadow rounded">
+                    <Card className="shadow-sm rounded-lg">
                         <Card.Body>
                             <center>
                                 <ClockHistory className="mb-4" size={30} color={red2} />

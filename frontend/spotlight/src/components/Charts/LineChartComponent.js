@@ -33,11 +33,11 @@ export default class LineChartComponent extends Component {
 						{
 							label: label,
 							data: data,
-							pointHoverBorderWidth: 2,
-							pointRadius: 1.5,
-							pointBorderWidth: 1,
+							pointHoverBorderWidth: 5,
+							pointRadius: 3.5,
+							pointBorderWidth: 2,
 							borderColor: color,
-							pointBackgroundColor: color,
+							pointBackgroundColor: '#FFFFFF',
 							pointBorderColor: color,
 							pointHoverBackgroundColor: color,
 							pointHoverBorderColor: color,
@@ -49,6 +49,11 @@ export default class LineChartComponent extends Component {
 					responsive: true,
 					maintainAspectRatio: false,
 					aspectRatio: 1,
+					elements: {
+						line: {
+							tension: 0
+						}
+					},
 					legend: {
 						display: false
 					},
@@ -79,7 +84,7 @@ export default class LineChartComponent extends Component {
 		let gradientLine = myChartRef.createLinearGradient(0, 0, 0, graphHeight);
 
 		const rgb = [color.substring(1, 3), color.substring(3, 5), color.substring(5, 7)];
-		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.75)`;
+		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.25)`;
 		const color2 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.0)`;
 
 		gradientLine.addColorStop(0, color1);

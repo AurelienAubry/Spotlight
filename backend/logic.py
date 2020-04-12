@@ -1,6 +1,7 @@
 import os
 import ast
 import pandas as pd
+from sklearn import preprocessing
 
 
 class Logic:
@@ -93,6 +94,12 @@ class Logic:
         return self.daily_streamings_df[self.daily_streamings_df.index > date]["track_count"]
 
 
+    def get_artists_list(self, day_offset):
+        date = self.get_date_offset(self.end_date, day_offset)
+        artists_list = self.streamings_df[self.streamings_df.index > date]['artist'].unique()
+        return artists_list
+
+
     def get_top_artists_df(self, day_offset, count):
         """
         Get the dataframe of the [count] top artists over the last [day_offset] days
@@ -139,11 +146,18 @@ class Logic:
         """
 
         date = self.get_date_offset(self.end_date, day_offset)
-        hours_streamings_df = self.streamings_df[self.streamings_df.index < date].resample(
-            '1H').sum()
+        hours_streamings_df = self.streamings_df[self.streamings_df.index > date].resample(
+            'H').sum()
         hours_streamings_df = hours_streamings_df.groupby(
             hours_streamings_df.index.hour).agg(lambda x: x.mean(skipna=False))
-        return hours_streamings_df
+
+        # Get column names first
+        names = hours_streamings_df.columns# Create the Scaler object
+        scaler = preprocessing.MinMaxScaler()# Fit your data on the scaler object
+        scaled_df = scaler.fit_transform(hours_streamings_df)
+        scaled_df = pd.DataFrame(scaled_df, columns=names)
+
+        return scaled_df
 
     def get_min_listened(self, day_offset):
         """
@@ -187,6 +201,22 @@ class Logic:
 
         date = self.get_date_offset(self.end_date, day_offset)
         return int(self.daily_streamings_df.at[date, 'cumTrack_count'][0])
+
+
+    def get_daily_artist_streamings_df(self, day_offset, artist):
+        date = self.get_date_offset(self.end_date, day_offset)
+        daily_artist_streamings_df = self.streamings_df.loc[self.streamings_df['artist'] == artist]
+        daily_artist_streamings_df = daily_artist_streamings_df.resample('D').agg({'track': 'count', 'minPlayed': 'sum'})
+        return daily_artist_streamings_df[daily_artist_streamings_df.index > date]
+
+    def get_artist_min_listened(self, day_offset, artist):
+        daily_artist_streamings_df = self.get_daily_artist_streamings_df(day_offset, artist)
+        return daily_artist_streamings_df['minPlayed']
+
+    def get_artist_track_listened(self, day_offset, artist):
+        daily_artist_streamings_df = self.get_daily_artist_streamings_df(day_offset, artist)
+        return daily_artist_streamings_df['track']
+
 
     def __init__(self):
         self.create_streaming_df()

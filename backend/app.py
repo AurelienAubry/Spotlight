@@ -19,6 +19,12 @@ def daily_listened_tracks():
     daily_listened_tracks_df = logic.get_daily_listened_tracks_df(day_offset)
     return json.dumps(daily_listened_tracks_df.to_json(orient='split', date_format='iso'))
 
+@app.route("/get/artists", methods=["GET"])
+def get_artists_list():
+    day_offset = int(request.args.get('dayOffset'))
+    artists_list = logic.get_artists_list(day_offset)
+    return json.dumps({"artists": artists_list.tolist()})
+
 
 @app.route("/get/top-artists", methods=["GET"])
 def get_top_artists():
@@ -40,7 +46,7 @@ def get_top_songs():
 def get_hours_day_listen():
     day_offset = int(request.args.get('dayOffset'))
     hours_streamings_df = logic.get_hours_day_listen(day_offset)
-    return json.dumps(hours_streamings_df.to_json(orient='index'))
+    return json.dumps(hours_streamings_df.to_json(orient='split'))
 
 
 @app.route("/get/min-listened", methods=["GET"])
@@ -61,6 +67,23 @@ def get_tracks_listened():
     day_offset = int(request.args.get('dayOffset'))
     tracks_listened = logic.get_tracks_listened(day_offset)
     return json.dumps({"tracks_listened": tracks_listened})
+
+
+@app.route("/get/artist-tracks-listened", methods=["GET"])
+def get_artist_tracks_listened():
+    day_offset = int(request.args.get('dayOffset'))
+    artist = request.args.get('artist')
+    artist_tracks_listened = logic.get_artist_track_listened(day_offset, artist)
+    return json.dumps(artist_tracks_listened.to_json(orient='split'))
+
+
+@app.route("/get/artist-min-listened", methods=["GET"])
+def get_artist_min_listened():
+    day_offset = int(request.args.get('dayOffset'))
+    artist = request.args.get('artist')
+    artist_tracks_listened = logic.get_artist_min_listened(day_offset, artist)
+    return json.dumps(artist_tracks_listened.to_json(orient='split'))
+
 
 
 if __name__ == '__main__':

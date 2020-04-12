@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RecapComponent from '../../components/Recap/RecapComponent'
+import RecapComponent from '../components/Recap/RecapComponent'
 
 export default class RecapContainer extends Component {
 

@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 
-import LineChartContainer from '../../containers/LineChart/LineChartContainer';
-import BarChartContainer from '../../containers/BarChart/BarChartContainer';
-import HorizontalBarChartContainer from '../../containers/BarChart/HorizontalBarChartContainer';
-import RecapContainer from '../../containers/Recap/RecapContainer';
+import ChartContainer from '../../containers/ChartContainer';
+import RecapContainer from '../../containers/RecapContainer';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import DropdownItem from 'react-bootstrap/DropdownItem';
+import {Typeahead} from 'react-bootstrap-typeahead';
+import LineChartComponent from '../../components/Charts/LineChartComponent';
+import HorizontalBarChartComponent from '../../components/Charts/HorizontalBarChartComponent';
+import PolarAreaChartComponent from '../../components/Charts/PolarAreaChartComponent';
 
 export default class Dashboard extends Component {
 
@@ -17,34 +19,35 @@ export default class Dashboard extends Component {
 		this.state = {
 			periodText: "Last 30 days",
 			period: 30,
-			unit: "minutes"
+			unit: "min",
+			selectedArtist: "None",
+			artistsList: []
 		};
 		this.recapContainerElement = React.createRef();
 		this.dailyListeningGraph = React.createRef();
 		this.topArtistGraph = React.createRef();
+		this.artistListeningGraph = React.createRef();
+		this.hoursGraph = React.createRef();
 	}
 
 	updatePeriod(e) {
-		const period = this.getPeriod(e.currentTarget.textContent)
+		const period = this.getPeriod(e.currentTarget.textContent);
 		this.setState({ periodText: e.currentTarget.textContent, period: period});
+
+		const {unit, selectedArtist} = this.state;
+
 		this.recapContainerElement.current.fetchData(period);
-		if (this.state.unit == "minutes") {
-			this.dailyListeningGraph.current.fetchData(`/get/daily-listened-min?dayOffset=${period}`, "index", "data");
-		} else {
-			this.dailyListeningGraph.current.fetchData(`/get/daily-listened-tracks?dayOffset=${period}`, "index", "data");
-		}
+		this.dailyListeningGraph.current.fetchData(`/get/daily-listened-${unit}?dayOffset=${period}`, "index", "data");
 		this.topArtistGraph.current.fetchData(`/get/top-artists?dayOffset=${period}&count=10`, "index", "data");
+		this.hoursGraph.current.fetchData(`/get/day-hours?dayOffset=${period}`, "index", "data");
+		//this.artistListeningGraph.current.fetchData(`/get/artist-${unit}-listened?dayOffset=${period}&artist=${selectedArtist}`, "index", "data");
 	}
 
-	updateUnit(val) {
-		this.setState({ unit: val });
-		const {period} = this.state
-		if (val == "minutes") {
-			this.dailyListeningGraph.current.fetchData(`/get/daily-listened-min?dayOffset=${period}`, "index", "data");
-		} else {
-			this.dailyListeningGraph.current.fetchData(`/get/daily-listened-tracks?dayOffset=${period}`, "index", "data");
-		}
-		
+	updateUnit(unit) {
+		this.setState({ unit: unit });
+		const {period, selectedArtist} = this.state
+		this.dailyListeningGraph.current.fetchData(`/get/daily-listened-${unit}?dayOffset=${period}`, "index", "data");
+		//this.artistListeningGraph.current.fetchData(`/get/artist-${unit}-listened?dayOffset=${period}&artist=${selectedArtist}`, "index", "data");
 	}
 
 	getPeriod(text) {
@@ -66,11 +69,20 @@ export default class Dashboard extends Component {
 		}
 	}
 
+	getArtistsList() {
+		fetch("/get/artists?dayOffset=365").then(res => res.json()).then(data => {
+		  this.setState({ artistsList: data.artists, selectedArtist: data.artists[0]});
+		});
+	  }
+
 	componentDidMount() {
-		const {period} = this.state
+		const {period, unit, selectedArtist} = this.state
+		this.getArtistsList()
 		this.recapContainerElement.current.fetchData(period);
 		this.dailyListeningGraph.current.fetchData(`/get/daily-listened-min?dayOffset=${period}`, "index", "data");
 		this.topArtistGraph.current.fetchData(`/get/top-artists?dayOffset=${period}&count=10`, "index", "data");
+		this.hoursGraph.current.fetchData(`/get/day-hours?dayOffset=${period}`, "index", "data");
+		//this.artistListeningGraph.current.fetchData(`/get/artist-${unit}-listened?dayOffset=${period}&artist=${selectedArtist}`, "index", "data");
 	}
 
 	render() {
@@ -81,7 +93,7 @@ export default class Dashboard extends Component {
 						<Col><h4>Global Statistics</h4></Col>
 						<Col xs={4}></Col>
 						<Col>
-							<DropdownButton variant="custom-btn" className="mb-3 float-right shadow rounded" title={this.state.periodText}>
+							<DropdownButton variant="custom-btn" className="border mb-3 float-right shadow-sm rounded-lg" title={this.state.periodText}>
 								<DropdownItem><div onClick={this.updatePeriod.bind(this)}>Last 30 days</div></DropdownItem>
 								<DropdownItem><div onClick={this.updatePeriod.bind(this)}>Last 6 months</div></DropdownItem>
 								<DropdownItem><div onClick={this.updatePeriod.bind(this)}>Last 12 months</div></DropdownItem>
@@ -92,7 +104,7 @@ export default class Dashboard extends Component {
 					<div class="mt-4" />
 					<Row>
 						<Col>
-							<Card className="shadow rounded">
+							<Card className="shadow-sm rounded-lg">
 								<Card.Body>
 									<Container fluid className="mb-2">
 									<Row className="mb-2">
@@ -102,24 +114,24 @@ export default class Dashboard extends Component {
 											<Col>
 												<div className="float-right ">
 													Statistics based on: &nbsp;
-													<ToggleButtonGroup type="radio" name="options" defaultValue="minutes" className="shadow rounded" onChange={this.updateUnit.bind(this)}>
+													<ToggleButtonGroup type="radio" name="options" defaultValue="min" className="shadow-sm rounded" onChange={this.updateUnit.bind(this)}>
 														<ToggleButton value="tracks" className="custom-btn">Tracks</ToggleButton>
-														<ToggleButton value="minutes" className="custom-btn">Minutes</ToggleButton>
+														<ToggleButton value="min" className="custom-btn">Minutes</ToggleButton>
 													</ToggleButtonGroup>
 												</div>
 											</Col>
 										</Row>
 										
 									</Container>
-									<BarChartContainer ref={this.dailyListeningGraph} label={this.state.unit} />
+									<ChartContainer component={LineChartComponent} ref={this.dailyListeningGraph} label={this.state.unit} />
 								</Card.Body>
 							</Card>
 						</Col>
 					</Row>
 					<div class="mt-4" />
 					<Row>
-						<Col>
-							<Card className="shadow rounded">
+						<Col xs={6}>
+							<Card className="shadow-sm rounded-lg">
 								<Card.Body>
 									<Container fluid className="mb-2">
 										<Row>
@@ -128,11 +140,51 @@ export default class Dashboard extends Component {
 											</Col>
 										</Row>
 									</Container>
-									<HorizontalBarChartContainer ref={this.topArtistGraph} label={this.state.unit} />
+									<ChartContainer component={HorizontalBarChartComponent} ref={this.topArtistGraph} label={this.state.unit} />
+								</Card.Body>
+							</Card>
+						</Col>
+						<Col xs={6}>
+							<Card className="shadow-sm rounded-lg">
+								<Card.Body>
+									<Container fluid className="mb-2">
+										<Row>
+											<Col>
+												<b>Top Artists over the {this.state.periodText.toLowerCase()}</b>
+											</Col>
+										</Row>
+									</Container>
+									<ChartContainer component={PolarAreaChartComponent} ref={this.hoursGraph} label={this.state.unit} />
 								</Card.Body>
 							</Card>
 						</Col>
 					</Row>
+					<div class="mt-4" />
+					{/*<Row>
+						<Col>
+							<Card className="shadow rounded">
+								<Card.Body>
+									<Container fluid className="mb-2">
+										<Row>
+											<Col>
+												<b>Listening of {this.state.selectedArtist}</b>
+											</Col>
+											<Typeahead
+												onChange={(selected) => {
+													this.setState({selectedArtist : selected})
+													const {unit, period} = this.state;
+													this.artistListeningGraph.current.fetchData(`/get/artist-${unit}-listened?dayOffset=${period}&artist=${selected}`, "index", "data");
+												}}
+												options={this.state.artistsList}
+												placeholder="Choose an artist..."
+												/>
+										</Row>
+									</Container>
+									<BarChartContainer ref={this.artistListeningGraph} label={this.state.unit} />
+								</Card.Body>
+							</Card>
+						</Col>
+											</Row> */}
 				</Container>
 			</div>
 		);
