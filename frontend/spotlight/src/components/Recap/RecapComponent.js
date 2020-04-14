@@ -23,7 +23,6 @@ export default class RecapComponent extends Component {
                                 <h4 className="font-weight-bold"> {nbSongs} </h4>
                             </center>
                         </Card.Body>
-
                     </Card>
                 </Col>
                 <Col>
@@ -34,7 +33,6 @@ export default class RecapComponent extends Component {
                                 <h4 className="font-weight-bold"> {nbMinutes} </h4>
                             </center>
                         </Card.Body>
-
                     </Card>
                 </Col>
                 <Col>
@@ -43,14 +41,11 @@ export default class RecapComponent extends Component {
                             <center>
                                 <b> Minutes Average </b>
                                 <h4 className="font-weight-bold"> {avgMinutes} </h4>
-
                             </center>
                         </Card.Body>
-
                     </Card>
                 </Col>
             </Row>
         );
     }
-
 }

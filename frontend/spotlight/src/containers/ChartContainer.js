@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { blue2} from "../colors";
+import { blue2 } from "../colors";
 import LineChartComponent from '../components/Charts/LineChartComponent';
 
 export default class ChartContainer extends Component {
@@ -20,7 +20,7 @@ export default class ChartContainer extends Component {
       const parsedData = JSON.parse(data);
       const chartLabels = parsedData[chartLabelsName]
       const chartData = parsedData[chartDataName]
-      this.setState({ chartLabels: chartLabels, chartData: chartData});
+      this.setState({ chartLabels: chartLabels, chartData: chartData });
     });
   }
 
@@ -32,9 +32,7 @@ export default class ChartContainer extends Component {
   render() {
     const { title, chartData, chartLabels, label, Component } = this.state;
     return (
-
       <Component data={chartData} labels={chartLabels} label={label} color={blue2} />
-
     );
   }
 

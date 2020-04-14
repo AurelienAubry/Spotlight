@@ -87,19 +87,53 @@ class Logic:
         return date.strftime('%Y-%m-%d')
 
     def get_daily_listened_min_df(self, day_offset):
+        """
+        Get the daily number of minutes listened over the last [day_offset] days
+
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+
+        Returns:
+            df -- dataframe containing the number of minutes listened over the last [day_offset] days
+            day 1 : 10 min
+            day 2 : 60 min
+            ...
+        """
         date = self.get_date_offset(self.end_date, day_offset)
         return self.daily_streamings_df[self.daily_streamings_df.index > date]["minPlayed"]
-    
+
     def get_daily_listened_tracks_df(self, day_offset):
+        """
+        Get the daily number of tracks listened over the last [day_offset] days
+
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+
+        Returns:
+            df -- dataframe containing the number of tracks listened over the last [day_offset] days
+            day 1 : 10 tracks
+            day 2 : 60 tracks
+            ...
+        """
+
         date = self.get_date_offset(self.end_date, day_offset)
         return self.daily_streamings_df[self.daily_streamings_df.index > date]["track_count"]
 
-
     def get_artists_list(self, day_offset):
-        date = self.get_date_offset(self.end_date, day_offset)
-        artists_list = self.streamings_df[self.streamings_df.index > date]['artist'].unique()
-        return artists_list
+        """
+        Get the list of artists listened over the last [day_offset] days
 
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+
+        Returns:
+            list of strings -- the list of artists listened over the last [day_offset] days
+        """
+
+        date = self.get_date_offset(self.end_date, day_offset)
+        artists_df = self.streamings_df[self.streamings_df.index >
+                                          date]['artist'].unique()
+        return artists_df.tolist()
 
     def get_top_artists_df(self, day_offset, count):
         """
@@ -121,11 +155,11 @@ class Logic:
     def get_top_songs_df(self, day_offset, count):
         """
         Get the dataframe of the [count] top songs over the last [day_offset] days
-        
+
         Arguments:
             day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
             count {int} -- the number of top songs to return
-        
+
         Returns:
             dataframe -- the dataframe containing the [count] top songs over the last [day_offset] days
         """
@@ -138,10 +172,10 @@ class Logic:
     def get_hours_day_listen(self, day_offset):
         """
         Get a summary the average minutes listened every hour of the day
-        
+
         Arguments:
             day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
-        
+
         Returns:
             dataframe -- the dataframe containing the averages minutes listened every hour of the day
         """
@@ -152,9 +186,8 @@ class Logic:
         hours_streamings_df = hours_streamings_df.groupby(
             hours_streamings_df.index.hour).agg(lambda x: x.mean(skipna=False))
 
-        # Get column names first
-        names = hours_streamings_df.columns# Create the Scaler object
-        scaler = preprocessing.MinMaxScaler()# Fit your data on the scaler object
+        names = hours_streamings_df.columns
+        scaler = preprocessing.MinMaxScaler()
         scaled_df = scaler.fit_transform(hours_streamings_df)
         scaled_df = pd.DataFrame(scaled_df, columns=names)
 
@@ -163,10 +196,10 @@ class Logic:
     def get_min_listened(self, day_offset):
         """
         Get the number of minutes listened over the last [day_offset] days
-        
+
         Arguments:
             day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
-        
+
         Returns:
             int -- the number of minutes listened over the last [day_offset] days
         """
@@ -177,25 +210,26 @@ class Logic:
     def get_avg_min_listened(self, day_offset):
         """
         Get the average number of minutes listened over the last [day_offset] days
-        
+
         Arguments:
             day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
-        
+
         Returns:
             int -- the average number of minutes listened over the last [day_offset] days
         """
 
         date = self.get_date_offset(self.end_date, day_offset)
-        avg_min_listened = self.daily_streamings_df[self.daily_streamings_df.index > date]['minPlayed'].mean()
+        avg_min_listened = self.daily_streamings_df[self.daily_streamings_df.index > date]['minPlayed'].mean(
+        )
         return int(avg_min_listened)
 
     def get_tracks_listened(self, day_offset):
         """
         Get the number of tracks listend over the last [day_offset] days
-        
+
         Arguments:
             day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
-        
+
         Returns:
             int -- the number of tracks listened over the last [day_offset] days
         """
@@ -203,21 +237,51 @@ class Logic:
         date = self.get_date_offset(self.end_date, day_offset)
         return int(self.daily_streamings_df.at[date, 'cumTrack_count'][0])
 
-
     def get_daily_artist_streamings_df(self, day_offset, artist):
+        """
+        Get the daily streamings of [artist] listend over the last [day_offset] days
+
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+            artist {string} -- the name of the artist
+        Returns:
+            df -- the daily streamings of [artist] listend over the last [day_offset] days
+        """
         date = self.get_date_offset(self.end_date, day_offset)
         daily_artist_streamings_df = self.streamings_df.loc[self.streamings_df['artist'] == artist]
-        daily_artist_streamings_df = daily_artist_streamings_df.resample('D').agg({'track': 'count', 'minPlayed': 'sum'})
+        daily_artist_streamings_df = daily_artist_streamings_df.resample(
+            'D').agg({'track': 'count', 'minPlayed': 'sum'})
         return daily_artist_streamings_df[daily_artist_streamings_df.index > date]
 
     def get_artist_min_listened(self, day_offset, artist):
-        daily_artist_streamings_df = self.get_daily_artist_streamings_df(day_offset, artist)
+        """
+        Get the daily minutes of [artist] listend over the last [day_offset] days
+
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+            artist {string} -- the name of the artist
+        Returns:
+            df -- the daily minutes of [artist] listend over the last [day_offset] days
+        """
+
+        daily_artist_streamings_df = self.get_daily_artist_streamings_df(
+            day_offset, artist)
         return daily_artist_streamings_df['minPlayed']
 
     def get_artist_track_listened(self, day_offset, artist):
-        daily_artist_streamings_df = self.get_daily_artist_streamings_df(day_offset, artist)
-        return daily_artist_streamings_df['track']
+        """
+        Get the daily tracks of [artist] listend over the last [day_offset] days
 
+        Arguments:
+            day_offset {int} -- the duration of the analyzed period (last [day_offset] days)
+            artist {string} -- the name of the artist
+        Returns:
+            df -- the daily tracks of [artist] listend over the last [day_offset] days
+        """
+
+        daily_artist_streamings_df = self.get_daily_artist_streamings_df(
+            day_offset, artist)
+        return daily_artist_streamings_df['track']
 
     def __init__(self):
         self.create_streaming_df()

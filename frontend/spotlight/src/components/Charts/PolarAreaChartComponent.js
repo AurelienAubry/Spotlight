@@ -73,31 +73,30 @@ export default class PolarAreaChartComponent extends Component {
 						duration: 1,
 						onComplete: function () {
 							var chartInstance = this.chart;
-
+							
 							myChartRef.font = "15px Arial";
 							myChartRef.textAlign = 'right';
 							myChartRef.textBaseline = 'bottom';
 							myChartRef.fillStyle = "#fff";
-							
-							var maxRadius = 0;
-		
-								var meta = chartInstance.controller.getDatasetMeta(0);
-								meta.data.forEach(function (bar) {
-									if (parseFloat(bar._model.outerRadius) > maxRadius){
-										maxRadius = parseFloat(bar._model.outerRadius);
-									}
-								});
-							
 
-					
-								var meta = chartInstance.controller.getDatasetMeta(0);
-								meta.data.forEach(function (bar) {
-									var myangl = ((bar._model.startAngle) + (bar._model.endAngle)) / 2;
-									var xpoint = (maxRadius + 15) * (Math.cos(myangl)) + (bar._model.x);
-									var ypoint = (maxRadius + 15) * (Math.sin(myangl)) + (bar._model.y) + 10;
-									myChartRef.fillText(bar._model.label, xpoint, ypoint);
-								});
-					
+							// Find the maximum radius of the polar chart
+							var maxRadius = 0;
+							
+							var meta = chartInstance.controller.getDatasetMeta(0);
+							meta.data.forEach(function (bar) {
+								if (parseFloat(bar._model.outerRadius) > maxRadius) {
+									maxRadius = parseFloat(bar._model.outerRadius);
+								}
+							});
+
+							// Display labels all around the chart
+							var meta = chartInstance.controller.getDatasetMeta(0);
+							meta.data.forEach(function (bar) {
+								var myangl = ((bar._model.startAngle) + (bar._model.endAngle)) / 2;
+								var xpoint = (maxRadius + 15) * (Math.cos(myangl)) + (bar._model.x);
+								var ypoint = (maxRadius + 15) * (Math.sin(myangl)) + (bar._model.y) + 10;
+								myChartRef.fillText(bar._model.label, xpoint, ypoint);
+							});
 						}
 					}
 				}
@@ -108,29 +107,29 @@ export default class PolarAreaChartComponent extends Component {
 		const { labels, data, label, color } = this.props;
 
 		const myChartRef = this.chartRef.current.getContext("2d");
-		const { height: graphHeight, width: graphWidth} = myChartRef.canvas;
+		const { height: graphHeight, width: graphWidth } = myChartRef.canvas;
 
-		let gradientLine = myChartRef.createRadialGradient(graphWidth / 2, graphHeight / 2, 0, graphWidth / 2,  graphHeight / 2, graphWidth / 4);
-
-		const rgb = [color.substring(1, 3), color.substring(3, 5), color.substring(5, 7)];
-		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.75)`;
-		const color2 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.0)`;
-
-		gradientLine.addColorStop(0, color1);
-		gradientLine.addColorStop(1, color2);
-
-
+		// Update chart's data
 		this.myChart.data.labels = labels;
-		this.myChart.data.datasets[0].backgroundColor = gradientLine
-		this.myChart.data.datasets[0].hoverBackgroundColor = gradientLine
 		this.myChart.data.datasets[0].data = data;
 		this.myChart.data.datasets[0].label = label;
 
-		
+		// Generate Color of the graph (gradient)
+		let gradientRadial = myChartRef.createRadialGradient(graphWidth / 2, graphHeight / 2, 0, graphWidth / 2, graphHeight / 2, graphWidth / 4);
+		const rgb = [color.substring(1, 3), color.substring(3, 5), color.substring(5, 7)];
+		const color1 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.75)`;
+		const color2 = `rgba(${rgb.map(c => (parseInt(c, 16))).join()}, 0.0)`;
+		gradientRadial.addColorStop(0, color1);
+		gradientRadial.addColorStop(1, color2);
 
+		this.myChart.data.datasets[0].backgroundColor = gradientRadial
+		this.myChart.data.datasets[0].hoverBackgroundColor = gradientRadial
+		
+		// Background data
 		var background_data = new Array(data.length).fill(1);
 		this.myChart.data.datasets[1].data = background_data;
 
+		// Update the graph
 		this.myChart.update();
 	}
 }

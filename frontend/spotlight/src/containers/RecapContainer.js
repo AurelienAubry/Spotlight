@@ -14,27 +14,27 @@ export default class RecapContainer extends Component {
 
   fetchData(period) {
     fetch(`/get/tracks-listened?dayOffset=${period}`).then(res => res.json()).then(data => {
-      this.setState({ nbSongs: data.tracks_listened})
+      this.setState({ nbSongs: data.tracks_listened })
     });
 
     fetch(`/get/min-listened?dayOffset=${period}`).then(res => res.json()).then(data => {
-      this.setState({ nbMinutes: data.min_listened})
+      this.setState({ nbMinutes: data.min_listened })
     });
 
     fetch(`/get/avg-min-listened?dayOffset=${period}`).then(res => res.json()).then(data => {
-      this.setState({ avgMinutes: data.avg_min_listened})
+      this.setState({ avgMinutes: data.avg_min_listened })
     });
   }
 
   componentDidMount() {
-    const {period} = this.props;
+    const { period } = this.props;
     this.fetchData(period);
   }
 
   render() {
-    const { nbSongs, nbMinutes, avgMinutes} = this.state;
+    const { nbSongs, nbMinutes, avgMinutes } = this.state;
     return (
-      <RecapComponent nbSongs={nbSongs} nbMinutes={nbMinutes} avgMinutes={avgMinutes}/>
+      <RecapComponent nbSongs={nbSongs} nbMinutes={nbMinutes} avgMinutes={avgMinutes} />
 
     );
   }
