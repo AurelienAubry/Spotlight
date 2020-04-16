@@ -4,9 +4,12 @@ import numpy as np
 
 from logic import *
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='build/', static_url_path='/')
 logic = Logic()
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 @app.route("/get/daily-listened-min", methods=["GET"])
 def get_daily_listened_min():
