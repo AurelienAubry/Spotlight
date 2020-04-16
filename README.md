@@ -1,3 +1,6 @@
+## Spotlight
+---
+
 Spotlight is a Spotify dashboard that allows user to visualize her favorite artist and listening habits. The following metrics are available, over the last 3/6/12 months:
 
 * Total number of tracks listened.
@@ -12,16 +15,34 @@ The backend API of this application is built using [Python](https://www.python.o
 
 The frontend part is made with [React](https://en.reactjs.org/) and [Bootstrap](https://getbootstrap.com/). The graphs are made with [Chart.js](https://www.chartjs.org/) library.
 
-The building process of this project is detailled in the following set of articles:
+### Usage
 
-* Spotify Dataviz Part1: Process streamings files
-* Spotify Dataviz Part2: Create your private API
-* Spotify Dataviz Part3: Build the frontend
+- Copy you Spotify data in the `̀backend/MyData/` folder.
+- Start the local Flask's server by running the `backend/app.py` python script.
+- Connect to `localhost:5000` to acess the dashboard.
 
-This project is available on [Github](https://github.com/AurelienAubry/Spotlight).
 
-Here some helpfull links, used to build this project:
+### Folder's structure
+```
+.
+├── backend
+│   ├── build
+│   │   └── static
+│   │       ├── css
+│   │       └── js
+│   └── MyData
+└── frontend
+    └── spotlight
+        ├── public
+        └── src
+            ├── components
+            │   ├── Charts
+            │   ├── List
+            │   ├── NavBar
+            │   └── Recap
+            ├── containers
+            └── views
+                └── Dashboard
 
-<https://towardsdatascience.com/spotify-rewrapped-e2a7cc94fb4e>
-<https://towardsdatascience.com/get-your-spotify-streaming-history-with-python-d5a208bbcbd3>
-<https://dribbble.com/shots/6539697-Dashboard-Spotify-Statistics>
+18 directories
+```
