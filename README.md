@@ -22,7 +22,7 @@ The frontend part is made with [React](https://en.reactjs.org/) and [Bootstrap](
 - Connect to `localhost:5000` to acess the dashboard.
 
 
-### Folder's structure
+### Folders structure
 ```
 .
 ├── backend
