@@ -2,7 +2,7 @@
 
 ## Spotlight
 
-Spotlight is a Spotify dashboard that allows user to visualize her favorite artist and listening habits. The following metrics are available, over the last 3/6/12 months:
+Spotlight is a Spotify dashboard that allows user to visualize his favorite artist and listening habits. The following metrics are available, over the last 3/6/12 months:
 
 * Total number of tracks listened.
 * Total minutes listend.
