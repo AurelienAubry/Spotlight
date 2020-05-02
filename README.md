@@ -2,7 +2,7 @@
 
 ## Spotlight
 
-Spotlight is a Spotify dashboard that allows user to visualize his listening habits. The following metrics are available, over the last 3/6/12 months:
+Spotlight is a Spotify dashboard that allows you to visualize your listening habits. The following metrics are available, over the last 3/6/12 months:
 
 * Total number of tracks listened.
 * Total minutes listend.
@@ -18,7 +18,7 @@ The frontend part is made with [React](https://en.reactjs.org/) and [Bootstrap](
 
 ### Usage
 
-- Copy you Spotify data in the `̀backend/MyData/` folder.
+- Copy your Spotify's data in the `̀backend/MyData/` folder.
 - Start the local Flask's server by running the `backend/app.py` python script.
 - Connect to `localhost:5000` to acess the dashboard.
 
